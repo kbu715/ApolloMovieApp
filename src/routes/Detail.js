@@ -1,18 +1,27 @@
 import { Link, useParams } from "react-router-dom";
 import React from "react";
 import { gql } from "apollo-boost";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery, useMutation } from "@apollo/react-hooks";
 import styled from "styled-components";
+
+//Apollo에게 mutation이 @client에 있다고 알려줘야한다.
+const LIKE_MOVIE = gql`
+  mutation toggleLikeMovie($id: Int!, $isLiked: Boolean!) {
+    toggleLikeMovie(id: $id, isLiked: $isLiked) @client
+  }
+`;
 //query 작성
 //query에 variable이 있을 때(id같은거) 그 query의 이름을 적어야한다. only for Apollo.
 const GET_MOVIE = gql`
   query getMovie($id: Int!) {
     movie(id: $id) {
+      id
       title
       medium_cover_image
       language
       rating
       description_intro
+      isLiked @client
     }
     suggestions(id: $id) {
       id
@@ -77,20 +86,45 @@ const Description = styled.p`
 
 const Suggestions = styled.div``;
 
+const ToggleBtn = styled.button`
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 1em;
+  cursor: pointer;
+  color: white;
+  &:hover, &:focus, &:active {
+    border: none;
+    outline: none;
+  }
+`;
+
 //query 안에 movie(id: $id) 이부분 부터 server을 위한 query.
 
 const Detail = () => {
   const { id } = useParams();
+
   const { loading, data } = useQuery(GET_MOVIE, {
     variables: { id: parseInt(id) },
   });
+
+
+  //useMutation은 배열의 첫번째 요소로 mutation을 준다. 이름은 아무렇게 지어도 상관없다.
+  const [toggleLikeMovie] = useMutation(LIKE_MOVIE, {
+    variables: { id: parseInt(id), isLiked: data?.movie?.isLiked },
+  });
+
 
   console.log(data?.suggestions);
 
   return (
     <Container>
       <Column>
-        <Title>{loading ? "Loading..." : data.movie.title}</Title>
+        <Title>
+          {loading ? "Loading..." : data.movie.title}{" "}
+          {/* {data?.movie?.isLiked ? "❤" : "☹"} */}
+        <ToggleBtn onClick={toggleLikeMovie}>{data?.movie?.isLiked ? "❤" : "☹"}</ToggleBtn>
+        </Title>
         {!loading && (
           <>
             <Subtitle>

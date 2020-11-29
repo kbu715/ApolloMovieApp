@@ -5,14 +5,17 @@ import Movie from "../components/Movie";
 import styled from "styled-components";
 
 //query 작성
+// @client : isLiked가 클라이언트에 있다고 알려준다. 백엔드에 등록을 한다.
 const GET_MOVIES = gql`
   {
     movies {
       id
       medium_cover_image
+      isLiked @client
     }
   }
 `;
+
 
 const Container = styled.div`
   display: flex;
@@ -71,7 +74,7 @@ const Home = () => {
 
       {loading && <Loading>Loading...</Loading>}
       <Movies>
-        {data?.movies?.map((movie) => <Movie key={movie.id} id={movie.id} bg={movie.medium_cover_image}/>)}
+        {data?.movies?.map((movie) => <Movie key={movie.id} isLiked={movie.isLiked} id={movie.id} bg={movie.medium_cover_image}/>)}
         </Movies>
     </Container>
   );
