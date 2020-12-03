@@ -93,7 +93,9 @@ const ToggleBtn = styled.button`
   font-size: 1em;
   cursor: pointer;
   color: white;
-  &:hover, &:focus, &:active {
+  &:hover,
+  &:focus,
+  &:active {
     border: none;
     outline: none;
   }
@@ -108,12 +110,10 @@ const Detail = () => {
     variables: { id: parseInt(id) },
   });
 
-
   //useMutation은 배열의 첫번째 요소로 mutation을 준다. 이름은 아무렇게 지어도 상관없다.
   const [toggleLikeMovie] = useMutation(LIKE_MOVIE, {
     variables: { id: parseInt(id), isLiked: data?.movie?.isLiked },
   });
-
 
   console.log(data?.suggestions);
 
@@ -121,9 +121,16 @@ const Detail = () => {
     <Container>
       <Column>
         <Title>
-          {loading ? "Loading..." : data.movie.title}{" "}
-          {/* {data?.movie?.isLiked ? "❤" : "☹"} */}
-        <ToggleBtn onClick={toggleLikeMovie}>{data?.movie?.isLiked ? "❤" : "☹"}</ToggleBtn>
+          {loading ? (
+            "Loading..."
+          ) : (
+            <>
+              {data.movie.title}
+              <ToggleBtn onClick={toggleLikeMovie}>
+                {data?.movie?.isLiked ? "❤" : "☹"}
+              </ToggleBtn>
+            </>
+          )}
         </Title>
         {!loading && (
           <>
