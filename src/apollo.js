@@ -1,7 +1,7 @@
-import ApolloClient from "apollo-boost";
-
+import { ApolloClient, InMemoryCache } from '@apollo/client';
 const client = new ApolloClient({
-  uri: "http://localhost:4000/",
+  uri: '//localhost:4000/',
+  cache: new InMemoryCache(), // @apollo/client에서 요구함..
   resolvers: {
     Movie: {
       //apollo tools 보면 나오는 타입이랑 같아야한다.

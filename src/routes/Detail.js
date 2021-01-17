@@ -1,8 +1,8 @@
-import { Link, useParams } from "react-router-dom";
-import React from "react";
-import { gql } from "apollo-boost";
-import { useQuery, useMutation } from "@apollo/react-hooks";
-import styled from "styled-components";
+import { Link, useParams } from 'react-router-dom';
+import React from 'react';
+import { gql } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
+import styled from 'styled-components';
 
 //Apollo에게 mutation이 @client에 있다고 알려줘야한다.
 const LIKE_MOVIE = gql`
@@ -11,7 +11,8 @@ const LIKE_MOVIE = gql`
   }
 `;
 //query 작성
-//query에 variable이 있을 때(id같은거) 그 query의 이름을 적어야한다. only for Apollo.
+// query에 variable이 있을 때(id같은거) 정확히 말하면 query getMovie($id: Int!) <--이부분을 말한다.
+// 그 query의 이름을 적어야한다. only for Apollo!!! --> Apollo가 변수의 type을 체크하게 도와줄것이다.
 const GET_MOVIE = gql`
   query getMovie($id: Int!) {
     movie(id: $id) {
@@ -104,7 +105,7 @@ const ToggleBtn = styled.button`
 //query 안에 movie(id: $id) 이부분 부터 server을 위한 query.
 
 const Detail = () => {
-  const { id } = useParams();
+  const { id } = useParams(); //from react-router-dom
 
   const { loading, data } = useQuery(GET_MOVIE, {
     variables: { id: parseInt(id) },
@@ -122,12 +123,12 @@ const Detail = () => {
       <Column>
         <Title>
           {loading ? (
-            "Loading..."
+            'Loading...'
           ) : (
             <>
               {data.movie.title}
               <ToggleBtn onClick={toggleLikeMovie}>
-                {data?.movie?.isLiked ? "❤" : "☹"}
+                {data?.movie?.isLiked ? '❤' : '☹'}
               </ToggleBtn>
             </>
           )}
@@ -137,12 +138,16 @@ const Detail = () => {
             <Subtitle>
               {data?.movie?.language} • {data?.movie?.rating}
             </Subtitle>
-            <Description>{data?.movie?.description_intro}</Description>
+            <Description>
+              {data?.movie?.description_intro.length > 300
+                ? `${data?.movie?.description_intro.slice(0, 300)}...`
+                : data?.movie?.description_intro}
+            </Description>
 
             <Suggestions>
               {data?.suggestions.map((m) => (
-                <Link to={`/${m.id}`}>
-                  <MiniPoster key={m.id} bg={m.medium_cover_image} />
+                <Link to={`/${m.id}`} key={m.id}>
+                  <MiniPoster bg={m.medium_cover_image} />
                 </Link>
               ))}
             </Suggestions>
@@ -155,3 +160,7 @@ const Detail = () => {
 };
 
 export default Detail;
+
+//아폴로는 cache를 갖고있다. 디테일 페이지에 한번 들어오면
+// 다음번에 들어올 때 loading이 없다. cache에서 찾아서 준다.
+// 유저가 loading 화면을 덜 보게 된다는 말이다.
