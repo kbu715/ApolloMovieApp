@@ -29,7 +29,6 @@ const Movie = ({ id, bg, isLiked }) => {
       <Link to={`/${id}`}>
         <Poster bg={bg} />
       </Link>
-      {/* <button>{isLiked ? "Unlike" : "Like"}</button> */}
     </Container>
   );
 };

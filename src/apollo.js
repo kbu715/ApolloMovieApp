@@ -10,10 +10,17 @@ const client = new ApolloClient({
     Mutation: {
       //이 동작은 서버에 있는 graphql resolver와 같이 동작
       toggleLikeMovie: (_, { id, isLiked }, { cache }) => {
-        cache.writeData({
-          id: `Movie:${id}`,
-          data: {
-            isLiked: !isLiked,
+        // console.log(id);
+        const myMovie = {
+          __typename: 'Movie',
+          id: `${id}`,
+          isLiked: `${isLiked}`,
+        };
+        cache.modify({
+          // id: `Movie:${id}`,
+          id: cache.identify(myMovie),
+          fields: {
+            isLiked: () => !isLiked,
           },
         });
       },
