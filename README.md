@@ -15,3 +15,10 @@ Movie app built with React, Apollo and GraphQL
 ## 3. Detail Like Button
 
 ![좋아요버튼](https://user-images.githubusercontent.com/63832678/100537204-ba17aa00-3269-11eb-8c8d-7283c336b410.png)
+
+
+### To Do 
+
+./src/Detail
+
+useMutation 관련 onClick 함수 타입 알아보기

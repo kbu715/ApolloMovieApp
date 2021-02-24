@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-
+import { IMovieType } from '../interfaces';
 const Container = styled.div`
   height: 380px;
   width: 100%;
@@ -10,7 +10,7 @@ const Container = styled.div`
   background-color: rgba(0, 0, 0, 0.1);
 `;
 
-const Poster = styled.div`
+const Poster = styled.div<{bg: string}>`
   background-image: url(${(props) => props.bg});
   width: 100%;
   height: 100%;
@@ -23,7 +23,7 @@ const Poster = styled.div`
   }
 `;
 
-const Movie = ({ id, bg, isLiked }) => {
+const Movie = ({ id, bg }: IMovieType) => {
   return (
     <Container>
       <Link to={`/${id}`}>

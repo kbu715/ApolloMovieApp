@@ -3,6 +3,15 @@ import React from 'react';
 import { gql } from '@apollo/client';
 import { useQuery, useMutation } from '@apollo/client';
 import styled from 'styled-components';
+import { IGetMovieVars, IGetMovieData } from '../interfaces';
+
+interface IToggleLikeMovie {
+}
+
+interface IToggleLikeMovieVars {
+  id: number;
+  isLiked: boolean;
+}
 
 //Apollo에게 mutation이 @client에 있다고 알려줘야한다.
 const LIKE_MOVIE = gql`
@@ -46,7 +55,7 @@ const Column = styled.div`
   width: 50%;
 `;
 
-const Poster = styled.div`
+const Poster = styled.div<{bg: string | undefined}>`
   width: 25%;
   height: 65%;
   overflow: hidden;
@@ -58,7 +67,7 @@ const Poster = styled.div`
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 `;
 
-const MiniPoster = styled.div`
+const MiniPoster = styled.div<{bg: string}>`
   display: inline-block;
   width: 125px;
   height: 200px;
@@ -88,7 +97,7 @@ const Description = styled.p`
 
 const Suggestions = styled.div``;
 
-const ToggleBtn = styled.button`
+const ToggleBtn = styled.button<{onClick: any}>`
   border: none;
   outline: none;
   background: transparent;
@@ -106,15 +115,15 @@ const ToggleBtn = styled.button`
 //query 안에 movie(id: $id) 이부분 부터 server을 위한 query.
 
 const Detail = () => {
-  const { id } = useParams(); //from react-router-dom
+  const { id } = useParams<{id: string}>(); //from react-router-dom
 
-  const { loading, data } = useQuery(GET_MOVIE, {
+  const { loading, data } = useQuery<IGetMovieData, IGetMovieVars>(GET_MOVIE, {
     variables: { id: parseInt(id) },
   });
 
   //useMutation은 배열의 첫번째 요소로 mutation을 준다. 이름은 아무렇게 지어도 상관없다.
-  const [toggleLikeMovie] = useMutation(LIKE_MOVIE, {
-    variables: { id: parseInt(id), isLiked: data?.movie?.isLiked },
+  const [toggleLikeMovie] = useMutation<IToggleLikeMovie, IToggleLikeMovieVars>(LIKE_MOVIE, {
+    variables: { id: parseInt(id), isLiked: data?.movie.isLiked as boolean },
   });
 
   console.log(data?.suggestions);
@@ -127,7 +136,7 @@ const Detail = () => {
             'Loading...'
           ) : (
             <>
-              {data.movie.title}
+              {data?.movie.title}
               <ToggleBtn onClick={toggleLikeMovie}>
                 {data?.movie?.isLiked ? '❤' : '☹'}
               </ToggleBtn>
@@ -137,12 +146,12 @@ const Detail = () => {
         {!loading && (
           <>
             <Subtitle>
-              {data?.movie?.language} • {data?.movie?.rating}
+              {data?.movie.language} • {data?.movie.rating}
             </Subtitle>
             <Description>
-              {data?.movie?.description_intro.length > 300
+              {data ? (data.movie.description_intro.length > 300
                 ? `${data?.movie?.description_intro.slice(0, 300)}...`
-                : data?.movie?.description_intro}
+                : data?.movie?.description_intro) : ''}
             </Description>
 
             <Suggestions>

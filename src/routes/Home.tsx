@@ -1,9 +1,8 @@
 import React from 'react';
-import { gql } from '@apollo/client';
-import { useQuery } from '@apollo/client';
+import { useQuery, gql } from '@apollo/client';
 import Movie from '../components/Movie';
 import styled from 'styled-components';
-
+import { IMoviesData } from '../interfaces';
 //query 작성 (query 작성은 보통 Component 밖에 있다.)
 // @client : isLiked가 클라이언트에 있다고 알려준다. 백엔드에 등록을 한다.
 const GET_MOVIES = gql`
@@ -61,7 +60,7 @@ const Movies = styled.div`
 `;
 
 const Home = () => {
-  const { loading, data } = useQuery(GET_MOVIES);
+  const { loading, data } = useQuery<IMoviesData>(GET_MOVIES);
   // console.log(data);
   return (
     <Container>
