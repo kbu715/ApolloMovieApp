@@ -39,3 +39,18 @@ export interface IGetMovieData {
   movie: IGetMovieDetail;
   suggestions: IGetSuggestion[];
 }
+
+
+
+
+//----------------------------
+
+export interface IToggleLikeMovie {
+  id: number;
+  isLiked: boolean;
+}
+
+export interface IToggleLikeMovieVars {
+  id: number;
+  isLiked: boolean;
+}

@@ -3,15 +3,7 @@ import React from 'react';
 import { gql } from '@apollo/client';
 import { useQuery, useMutation } from '@apollo/client';
 import styled from 'styled-components';
-import { IGetMovieVars, IGetMovieData } from '../interfaces';
-
-interface IToggleLikeMovie {
-}
-
-interface IToggleLikeMovieVars {
-  id: number;
-  isLiked: boolean;
-}
+import { IGetMovieVars, IGetMovieData, IToggleLikeMovie, IToggleLikeMovieVars } from '../interfaces';
 
 //Apollo에게 mutation이 @client에 있다고 알려줘야한다.
 const LIKE_MOVIE = gql`
@@ -97,7 +89,7 @@ const Description = styled.p`
 
 const Suggestions = styled.div``;
 
-const ToggleBtn = styled.button<{onClick: any}>`
+const ToggleBtn = styled.button`
   border: none;
   outline: none;
   background: transparent;
@@ -137,7 +129,7 @@ const Detail = () => {
           ) : (
             <>
               {data?.movie.title}
-              <ToggleBtn onClick={toggleLikeMovie}>
+              <ToggleBtn onClick={()=>toggleLikeMovie}>
                 {data?.movie?.isLiked ? '❤' : '☹'}
               </ToggleBtn>
             </>
